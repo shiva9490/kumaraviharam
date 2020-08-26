@@ -1,0 +1,212 @@
+.banner{ position:relative; z-index:11;  }
+.bannerimg img{ width:100%; }
+.text-cont{ display:table; position:absolute; width:100%; height:100%; }
+.text-cont-chld{ display:table-cell; vertical-align:middle; text-align:left; color:#fff; }
+.text-cont-chld h1{ font-size:35px; margin-bottom:10px; line-height:60px; }
+.text-cont-chld h1 span{ background-color:rgba(0,0,0,0.6); padding:10px 10px; }
+.text-cont-chld h3{ background-color:rgba(0,0,0,0.0); padding:10px; font-size:34px; font-family: 'Titillium Web', sans-serif;}
+.text-cont-chld p{ background-color:rgba(0,0,0,0.0); padding:0px 0px 0px 10px; font-size:18px; }
+
+.bx-wrapper {
+	position: relative;
+	padding: 0;
+	*zoom: 1;
+	height:100%;
+}
+.banner ul li{
+}
+.bx-wrapper img {
+	width:100%;
+	max-width: 100%;
+	display: block;
+}
+
+/** THEME
+===================================*/
+
+.bx-wrapper .bx-viewport {
+	height:100% !important;
+	/*fix other elements on the page moving (on Chrome)*/
+	-webkit-transform: translatez(0);
+	-moz-transform: translatez(0);
+    	-ms-transform: translatez(0);
+    	-o-transform: translatez(0);
+    	transform: translatez(0);
+}
+
+.bx-wrapper .bx-pager,
+.bx-wrapper .bx-controls-auto {
+	position: absolute;
+	bottom:20px !important;
+	width: 100%;
+}
+
+/* LOADER */
+.bxslider,
+.gallery{
+	margin:0 auto;
+	padding:0;
+	position:relative;
+}
+.bx-wrapper .bx-loading {
+	min-height: 50px;
+	background: url(../../images/bx_loader.gif) center center no-repeat #fff;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+}
+
+/* PAGER */
+
+.bx-wrapper .bx-pager {
+	text-align: center;
+	font-size: .85em;
+	font-family: Arial;
+	font-weight: bold;
+	color: #222;
+	position:absolute;
+	bottom:15px;
+}
+
+.bx-wrapper .bx-pager .bx-pager-item,
+.bx-wrapper .bx-controls-auto .bx-controls-auto-item {
+	display: inline-block;
+	*zoom: 1;
+}
+
+.bx-wrapper .bx-pager.bx-default-pager a {
+	border:2px solid #fff;
+	background:#222;
+	text-indent: -9999px;
+	display: block;
+	width: 18px;
+	height: 18px;
+	margin: 0 5px;
+	outline: 0;
+
+}
+
+.bx-wrapper .bx-pager.bx-default-pager a:hover,
+.bx-wrapper .bx-pager.bx-default-pager a.active {
+	background:#2a9da7;
+}
+
+/* DIRECTION CONTROLS (NEXT / PREV) */
+
+.bx-wrapper .bx-prev {
+	overflow:hidden;
+	left:5%;
+	background:url(../images/arr-left.png);
+}
+
+.bx-wrapper .bx-next {
+	right:5%;
+	background:url(../images/arr-right.png);
+}
+
+.bx-wrapper .bx-prev:hover {
+	background-position: left;
+}
+
+.bx-wrapper .bx-next:hover {
+	background-position:right;
+}
+
+.bx-wrapper .bx-controls-direction a {
+	position: absolute;
+	top: 50%;
+	margin-top: -16px;
+	outline: 0;
+	display:none;
+	width: 60px;
+	height: 60px;
+	-moz-border-radius:50%;-ms-border-radius:50%;-o-border-radius:50%;-webkit-border-radius:50%;border-radius:50%;
+	border:2px solid #999;
+	background-position:center;
+	text-indent: -9999px;
+	z-index: 9999;
+	
+	transition:all ease-in-out 0.2s;-moz-transition:all ease-in-out 0.2s;-ms-transition:all ease-in-out 0.2s;-o-transition:all ease-in-out 0.2s;
+	-webkit-transition:all ease-in-out 0.2s;
+	opacity:0.5;-moz-opacity:0.5;-ms-opacity:0.5;-o-opacity:0.5;-webkit-opacity:0.5;
+}
+.bx-wrapper .bx-controls-direction a:hover{
+	opacity:1;-moz-opacity:1;-ms-opacity:1;-o-opacity:1;-webkit-opacity:1;
+}
+
+.bx-wrapper .bx-controls-direction a.disabled {
+	display: none;
+}
+
+/* AUTO CONTROLS (START / STOP) */
+
+.bx-wrapper .bx-controls-auto {
+	text-align: center;
+}
+
+.bx-wrapper .bx-controls-auto .bx-start {
+	display: block;
+	text-indent: -9999px;
+	width: 10px;
+	height: 11px;
+	outline: 0;
+	background: url(../images/controls.png) -86px -11px no-repeat;
+	margin: 0 3px;
+}
+
+.bx-wrapper .bx-controls-auto .bx-start:hover,
+.bx-wrapper .bx-controls-auto .bx-start.active {
+	background-position: -86px 0;
+}
+
+.bx-wrapper .bx-controls-auto .bx-stop {
+	display: block;
+	text-indent: -9999px;
+	width: 9px;
+	height: 11px;
+	outline: 0;
+	background: url(../images/controls.png) -86px -44px no-repeat;
+	margin: 0 3px;
+}
+
+.bx-wrapper .bx-controls-auto .bx-stop:hover,
+.bx-wrapper .bx-controls-auto .bx-stop.active {
+	background-position: -86px -33px;
+}
+
+/* PAGER WITH AUTO-CONTROLS HYBRID LAYOUT */
+
+.bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-pager {
+	text-align: left;
+	width: 80%;
+}
+
+.bx-wrapper .bx-controls.bx-has-controls-auto.bx-has-pager .bx-controls-auto {
+	right: 0;
+	width: 35px;
+}
+
+/* IMAGE CAPTIONS */
+
+.bx-caption {
+	position:absolute;
+	left:0;
+	top:25%;
+	right:0;
+}
+.bx-caption  h1{
+	margin:0;
+	padding:0;
+	color:#fff;
+	text-align:left;
+	font-family: 'Open Sans Condensed', sans-serif;
+	font-size:60px;
+}
+.bx-caption  p{
+	color:#fff;
+	margin:20px 0;
+	font-size:18px;
+}
