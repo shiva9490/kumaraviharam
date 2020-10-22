@@ -62,3 +62,12 @@
 			</div>
 		</div>
 	</div>
+	
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#headerpage').load('');	
+        $('#bannimg').bxSlider({
+			auto: true,
+		});
+    });
+</script>

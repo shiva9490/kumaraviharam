@@ -93,8 +93,7 @@ a{ outline:none !important; text-decoration:none !important; }
 
 .ulli{ padding:0; padding:0px 0px 0px 0px; }
 .ulli li{ list-style-type:none; position:relative; padding:2px 20px; font-size:14px; }
-.col-sm-10.col-sm-offset-1 ul li:before{ /*position:absolute;*/ left:0; content:'\f061'; font-size:12px; top:5px; font-family:'FontAwesome'; color:#18848d;padding-left: 11px;
-    margin-right: 5px;}
+.ulli li:before{ position:absolute; left:0; content:'\f061'; font-size:12px; top:5px; font-family:'FontAwesome'; color:#18848d; }
 
 .workproces{ padding:20px 0px; }
 .workproces h3{ margin:0; padding:10px 0px 4px 0px; color:#2a9da7; font-family: 'Titillium Web', sans-serif;  }
@@ -189,19 +188,48 @@ a{ outline:none !important; text-decoration:none !important; }
 .pagecontent{ background:#e3e3e3;}
 .pagecontent h4{ margin:30px 0px 10px 0px ;font-size:22px; color:#2a9da7; font-family: 'Titillium Web', sans-serif; }
 
-.tablecol{ padding:0px 0px 0px 0px;}
-.tablecol table{ border:1px solid #dddbda; background-color:#fff;}
-.tablecol table tr th{ background-color:#eee; }
-.tablecol table tr th,.tablecol table tr td{ padding:24px 10px 30px 10px ; font-size:15px; border:1px solid #dddbda;  color:#333; }
+.tablecol{ padding:20px 0px 0px 0px; margin:0px 0px 0px 0px;}
+.tablecol table{ border:1px solid #c8e6e9; background-color:#fff;}
+.tablecol table tr th{ background-color:#c8e6e9;}
+.tablecol table tr th,.tablecol table tr td{padding:24px 10px 30px 10px;font-size:15px;border:1px solid #c8e6e9;color:#333;}
 .tablecol table tr{ padding:0px 0px 0px 0px;  }
 .tablecol table tr td a{ padding:0px 0px; display:block;  }
-.tablecol table tr:nth-child(even){ background-color:#eee; }
+.tablecol table tr:nth-child(even){ background-color:#c8e6e9; }
+
+
 .maps{ margin:40px 0px 0px 40px;}
 
-
+.dnr{ padding:40px 0px 20px 0px;}
 .ktr{ margin:10px 0px 0px 0px; border-right:#b4c1c2 1px solid;}
 .str{ margin:20px 0px 10px 0px; background:#e3e3e3;}
 .ktr h2{ padding-left: 38px;}
+
+
+.portfolio-content{padding:0px 0px; text-align:center;}
+.grid-wrap{ padding:20px 0px; position:relative; clear:both; }
+.portflo{ text-align:center; border:1px solid #ddd; box-shadow:0px 1px 3px rgba(0,0,0,0.2); width:100%; }
+.portflo > img{ max-width:100%; }
+a .portflo p{ text-align:center; background-color:#DFDFDF; margin:0px; padding:20px 0px 0px 0px !important; color:#032a55; display:block; }
+
+.done-topmenu{ z-index:555; overflow:hidden; padding:0px 0px 20px 0px;}
+.done-topmenu ul{ padding:12px 0px; margin:0;}
+.done-topmenu ul li{ float:left;  display:block; margin:0; padding:0;  }
+.done-topmenu ul li:nth-child(1){ border-left: none; }
+.done-topmenu ul li a{ padding:10px 10px; margin:4px 0px 0px 4px;  display:block; background-color:#eee; text-decoration:none; color:#333 ; }
+.done-topmenu ul li a:hover, .is-checked{ color:#333; }
+
+.nav-tabs { border-bottom:0px solid #fff;}
+.contcolm .nav-tabs li{ font-size:14px; text-align:center; color:#333;}
+.contcolm .nav-tabs li a{  color:#333; background-color:#bbe5f0;}
+.contcolm .nav-tabs li.active a{ background-color:#2A9DA7; color:#fff; }
+.contcolm .nav-tabs li.active a:focus{  background-color:#5bbfc8; color:#fff;  }
+.contcolm .tab-content{ padding:0px 0px 0px 0px;}
+.contcolm .nav-tabs li.active-lg a{ background-color:#032a55; color:#fff; }
+
+#tmt{ padding:30px 0px 0px 0px;}
+.btbp{ padding:20px 0px 10px 20px;}
+.btbp p{ padding:0px 0px 0px 20px;}
+.btbpt{padding:0px 0px 0px 20px;}
 
 #footercol{ background-color:#222222; padding:40px 0px; position:relative; z-index:12; overflow:hidden; clear:both; }
 .footermenu h3{  font-size:20px; color:#fff; font-weight:600; padding:0px 0px 0px 0px; font-family: 'Titillium Web', sans-serif;}

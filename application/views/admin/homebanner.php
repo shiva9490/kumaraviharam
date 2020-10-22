@@ -35,7 +35,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											<?php $i=1; foreach($home_banner->result() as $row){?>
+											<?php $i=1; foreach($home_banner as $row){?>
 											<tr>
 												<td><?php echo $i;?></td>
 												<td><img  style="width:100%;"src="<?php echo base_url();?>assets/img/<?php echo $row->home_banners;?>"><br>

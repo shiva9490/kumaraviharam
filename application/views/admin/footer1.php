@@ -1,10 +1,9 @@
 	
 	<footer class="footer">
-            Designed & Developed BY <a href="<?php echo base_url();?>">PWOG</a>
+            Designed & Developed BY <a href="http://advitsoft.com/">Advit soft</a>
         </footer>
     </div>
 	
-    
     <script src="<?php echo base_url();?>assets_admin/assets/node_modules/jquery/jquery-3.2.1.min.js"></script>
     <!-- Bootstrap popper Core JavaScript -->
     <script src="<?php echo base_url();?>assets_admin/assets/node_modules/popper/popper.min.js"></script>
@@ -109,10 +108,12 @@
             $('#example23').DataTable({
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                     'print'
                 ]
             });
             $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary mr-1');
+            //$('.buttons-excel').addClass('btn btn-primary mr-1');
         });
 
     </script>
@@ -304,5 +305,58 @@
 			setTimeout(function() { $(".alert").hide(); }, 3000);
 		}
 	</script>
+	<script>
+        function printDiv(divName) {
+
+            var printContents = document.getElementById(divName).innerHTML;
+            w = window.open();
+    
+            w.document.write(printContents);
+            w.document.write('<scr' + 'ipt type="text/javascript">' + 'window.onload = function() { window.print(); window.close(); };' + '</sc' + 'ript>');
+    
+            w.document.close(); // necessary for IE >= 10
+            w.focus(); // necessary for IE >= 10
+    
+            return true;
+        }
+	</script>
+	<script>
+        $("#exportButton").click(function(){
+          html2canvas(document.querySelector("#chartsContainer")).then(canvas => {  
+            var dataURL = canvas.toDataURL();
+            var width = canvas.width;
+            var printWindow = window.open("");
+            $(printWindow.document.body)
+              .html("<img id='Image' src=" + dataURL + " style='" + width + "'></img>")
+              .ready(function() {
+              printWindow.focus();
+              printWindow.print();
+            });
+          });
+        });
+    </script>
+    <!--
+    <script src='<?php echo base_url();?>assets/jsPDF-1.3.2/dist/jspdf.debug.js'></script>
+    <script src='<?php echo base_url();?>assets/jsPDF-1.3.2/libs/html2pdf.js'></script>
+    <script>
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        var canvas = pdf.canvas;
+        canvas.height = 72 * 11;
+        canvas.width= 72 * 8.5;;
+
+        // can also be document.body
+        var html = '<html><body>Hello <strong> World</strong></body></html>';
+
+        html2pdf(html, pdf, function(pdf) {
+                pdf.output('dataurlnewwindow');
+        });
+    </script>-->
+    <script>
+        $("#btn").click(function () {
+            //Hide all other elements other than printarea.
+            $("#printarea").show();
+            window.print();
+        });
+    </script>
 </body>
 </html>

@@ -53,13 +53,18 @@ $route['default_controller'] = 'Home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 //------------------Admin ------------
-$route['login'] = 'Admin/login';
+$route['Admin/login'] = 'Admin/login';
 $route['admin'] = 'Admin/admin';
-$route['logout'] = 'Admin/logout';
+$route['admin/logout'] = 'Admin/logout';
 
 //------------------/Admin ------------
 //$route['blog/(:any)'] = 'blog/index/$1';
 $route['about-us'] = 'about/index';
+$route['otp/(:any)'] = 'otp/index/$1';
+$route['success/(:any)'] = 'success/index/$1';
+$route['Certificate/(:any)/(:any)'] = 'Certificate/index/$1/$2';
+$route['checkout/(:any)'] = 'checkout/index/$1';
+$route['payment_deatils/(:any)'] = 'checkout/payment_deatils/$1';
+$route['verification/(:any)'] = 'verification/index/$1';
 $route['key-persons'] = 'keypersons/index';
 $route['blog-details/(:any)'] = 'blog/blog_details/$1';
-

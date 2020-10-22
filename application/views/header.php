@@ -7,15 +7,26 @@
 	<meta name="google-site-verification" content="339f-SE5_P4wJmz9gznA91rQnws92AsPmviluNAr5Lo" />
 	<title>Welcome to Kumara Viharam</title>
 	<link rel="shortcut icon" href="<?php echo base_url();?>assets/images/favicon.png" type="text/css">
-	<link href="<?php echo base_url();?>assets/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+	<!--<link href="<?php echo base_url();?>assets/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<link href="<?php echo base_url();?>assets/css/custome.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>assets/css/jquery.bxslider.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>assets/fonts/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet">
 	<!-- Bootstrap -->
 	<link href="<?php echo base_url();?>assets/css/bootstrap.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/lightbox/jquery.fancybox.css?v=2.1.5" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/lightbox/jquery.fancybox-buttons.css?v=1.0.5" />
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/lightbox/jquery.fancybox-thumbs.css?v=1.0.7" />
 </head>
+<style>
+.dropdown-menu{
+    left: -85px;
+}
+</style>
+<style>#donationtab > a{ background-color:#2a9da7; color:#fff; } hr{border-top: "1px solid #b0afae;"}</style>
 <body>
-<div id="mainheader">
+    
+    <div id="mainheader">
     <div class="header">
         <div class="container-fluid">
 			<div class="row">
@@ -40,6 +51,21 @@
 								<li id="keypersonstab"><a href="<?php echo base_url();?>key-persons">Blessings</a></li> 
 								<li id="donationtab"><a href="<?php echo base_url();?>donations">Donations</a></li>                                                                
 								<li id="contab"><a href="<?php echo base_url();?>contact">Contact</a></li>
+								<!--<?php if(isset($this->session->userdata['User_loggin'][0]['user_id']) && !empty($this->session->userdata['User_loggin'][0]['user_id'])){?>
+								<li>
+								    <div class="dropdown">
+                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <?php echo $this->session->userdata['User_loggin'][0]['name'];?> <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item" href="<?php echo base_url();?>dashboard">DashBoard</a>
+                                            <a href="<?php echo base_url();?>Signin/logout">Log out</a>
+                                        </div>
+                                    </div>
+								</li>
+								<?php }else{?>
+								<li id="Signin"><a href="<?php echo base_url();?>Signin">Sign in / Sign up</a></li>
+								<?php } ?>-->
 							</ul>
 						</div>
 						
@@ -59,6 +85,12 @@
 									<li id="keypersonstab"><a href="<?php echo base_url();?>key-persons">Blessings</a></li> 
 									<li id="donationtab"><a href="<?php echo base_url();?>donations">Donations</a></li>                                                                
 									<li id="contab"><a href="<?php echo base_url();?>contact">Contact</a></li>
+									<?php if(isset($this->session->userdata['User_loggin'][0]['user_id']) && !empty($this->session->userdata['User_loggin'][0]['user_id'])){?>
+    								<li><?php echo $this->session->userdata['User_loggin'][0]['name'];?></li>
+    								<li id="Signin"><a href="<?php echo base_url();?>Signin/logout">Log out</a></li>
+    								<?php }else{?>
+    								<li id="Signin"><a href="<?php echo base_url();?>Signin">Sign in / Sign up</a></li>
+    								<?php } ?>
 								</ul>
 							</div>
 						</div>

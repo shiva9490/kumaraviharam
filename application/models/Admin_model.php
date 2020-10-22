@@ -6,6 +6,18 @@ class Admin_model extends CI_Model {
 	    return $this->db->query("SELECT count(user_id) as usercount FROM `registration`")->result();
 	}
 	/*------------admin login--------------*/
+	public function Total_Doneros(){
+	    return $this->db->query('SELECT count(`don_id`) as doners FROM `donation` WHERE `payment_status`=1')->result();
+	}
+	public function Donation_amount(){
+	    return $this->db->query('SELECT sum(general_donation+`temple_stone`+`temple_flooor`+`sloka`) as total FROM `donation` WHERE `payment_status`=1')->result();
+	}
+	public function Today_Donation_Amount(){
+	    return $this->db->query('SELECT sum(general_donation+`temple_stone`+`temple_flooor`+`sloka`)  as today_total FROM `donation` WHERE `payment_status`=1 and `add_date` = CURRENT_DATE')->result();
+	}
+	public function Today_Transactions(){
+	    return $this->db->query('SELECT count(don_id) as todayorder FROM `donation` WHERE `payment_status`=1 and `add_date` = CURRENT_DATE')->result();
+	}
 	public function login_details($data){
 		//print_r($data);exit();
 		$sql = "SELECT * FROM admin WHERE (username ='".$data['username']."' AND password='".$data['password']."' AND admin_status=1)";
@@ -134,283 +146,6 @@ class Admin_model extends CI_Model {
 		return $this->db->where('id',$id)->update('blessings',$data);
 	}
 	/*---------------------End Blessings--------------------------------*/
-	public function get_home_services(){
-		return $this->db->from('home_services')->get()->result();
-	}
-	
-	public function edit_hserives($id){
-		return $this->db->from('home_services')->where('id',$id)->get()->result();
-	}
-	
-	public function update_hservices($id,$data){
-		return $this->db->where('id',$id)->update('home_services',$data);
-	}
-	public function home_quality(){
-		return $this->db->from('home_qprocess')->get()->result();
-	}
-	public function edit_home_quality($id){
-		return $this->db->from('home_qprocess')->where('id',$id)->get()->result();
-	}
-	public function update_home_quality($id,$data){
-		return $this->db->where('id',$id)->update('home_qprocess',$data);
-	}
-	
-	
-	/*------------admin login--------------*/
-	/*---------------Product catgory-----------------*/
-	public function user_details($id){
-	    return $this->db->from('registration')->where('user_id',$id)->get();
-	}
-	public function prod_catgory(){
-		return $this->db->from('catgory_list')->get();
-	}
-	public function add_catgory($data){
-		return $this->db->insert('catgory_list',$data);
-	}
-	public function delete_catogry($id){
-		return $this->db->where('catgory_id',$id)->delete('catgory_list');
-	}
-	public function update_catgory($id,$data){
-		return $this->db->where('catgory_id',$id)->update('catgory_list',$data);
-	}
-	public function inactive_catgory($id){
-		return $this->db->where('catgory_id',$id)->update('catgory_list',array('catgory_status'=>2));
-	}
-	public function active_catgory($id){
-		return $this->db->where('catgory_id',$id)->update('catgory_list',array('catgory_status'=>1));
-	}
-	
-	/*---------------/Product catgory-----------------*/
-	/*---------------Qty type list-----------------*/
-	public function qty_type(){
-		return $this->db->from('qty_type')->get();
-	}
-	public function qty_typelist(){
-		return $this->db->from('qty_type')->where('qty_status',1)->get();
-	}
-	public function add_qtytype($data){
-		return $this->db->insert('qty_type',$data);
-	}
-	public function delete_qtytype($id){
-		return $this->db->where('qty_id',$id)->delete('qty_type');
-	}
-	public function update_qtytype($id,$data){
-		return $this->db->where('qty_id',$id)->update('qty_type',$data);
-	}
-	public function inactive_qtytype($id){
-		return $this->db->where('qty_id',$id)->update('qty_type',array('qty_status'=>2));
-	}
-	public function active_qtytype($id){
-		return $this->db->where('qty_id',$id)->update('qty_type',array('qty_status'=>1));
-	}
-	/*---------------/Qty type list-----------------*/
-	/*---------------product list-----------------*/
-	public function product_list(){
-		return $this->db->select('products.*,pro_images.*,qty_type.*,catgory_list.*')
-		                ->from('products')
-		                ->join('qty_type','products.prod_qtytype = qty_type.qty_id','left')
-		                ->join('catgory_list','products.prod_categoryid = catgory_list.catgory_id','left')
-		                ->join('pro_images','products.prod_id = pro_images.pro_id','left')
-		                ->group_by('pro_images.pro_id')
-		                ->get();
-	}
-	public function catgory_type(){
-		return $this->db->from('catgory_list')->where('catgory_status',1)->get();
-	}
-	public function addproduct($data){
-		$this->db->insert('products',$data);
-		return $this->db->insert_id();
-	}
-	public function update_url($prod_name,$pro_id){
-	    $prod_name  = substr($prod_name,0,7);
-	    $prod_id = $pro_id;
-	    $prod_cod = $prod_name.$prod_id;
-	    return $this->db->where('prod_id',$pro_id)->update('products',array('prod_urlcode'=>$prod_cod));
-	}
-	public function uploadMimage($data,$pro_id){
-		foreach($data as $value)
-		{
-			$img=array($value,$pro_id);
-			$this->db->query("insert into pro_images(pro_image,pro_id) values(?,?)",$img);
-		}
-	}
-
-	public function inactive_product($id){
-	    return $this->db->where('prod_id',$id)->update('products',array('prod_status'=>2));
-	}
-	public function active_product($id){
-	    return $this->db->where('prod_id',$id)->update('products',array('prod_status'=>1));
-	}
-	public function delete_product($id){
-	    return $this->db->where('prod_id',$id)->delete('products');
-	}
-	public function edit_product($id){
-	    return $this->db->select('products.*,pro_images.*,qty_type.*,catgory_list.*')
-		                ->from('products')
-		                ->join('qty_type','products.prod_qtytype = qty_type.qty_id','left')
-		                ->join('catgory_list','products.prod_categoryid = catgory_list.catgory_id','left')
-		                ->join('pro_images','products.prod_id = pro_images.pro_id','left')
-		                ->group_by('pro_images.pro_id')->where('products.prod_id',$id)
-		                ->get();
-	}
-	
-	public function update_product($id,$data){
-	    return $this->db->where('prod_id',$id)->update('products',$data);
-	}
-	public function view_product($id){
-	    return $this->db->where('pro_id',$id)->from('pro_images')->get();
-	}
-	public function delete_productimg($id){
-	    return $this->db->where('pro_id',$id)->delete('pro_images');
-	}
-		public function inactive_productimg($id){
-	    return $this->db->where('pro_imgid',$id)->update('pro_images',array('pro_img_status'=>2));
-	}
-	public function active_productimg($id){
-	    return $this->db->where('pro_imgid',$id)->update('pro_images',array('pro_img_status'=>1));
-	}
-	public function add_productimage($data){
-	    return $this->db->insert('pro_images',$data);
-	}
-	public function update_productimage($id,$data){
-	    return $this->db->where('pro_imgid',$id)->update('pro_images',$data);
-	}
-	/*---------------product list-----------------*/
-	/*---------------order_list list-----------------*/
-	public function order_list(){
-	    return $this->db->select('orders.*,registration.*')
-                        ->from('orders')
-                        ->join('registration','orders.user_id = registration.user_id','left')
-                        ->order_by('orders.order_id','DESC')
-                        ->get();
-	}
-	public function oder_details($data1){
-	    return $this->db->insert('oder_details',$data1);
-	}
-	public function view_orderlist($id){
-	    return $this->db->select('orders.*,orders.date_time as order_date,registration.*,user_address.*')
-                        ->from('orders')
-                        ->join('registration','orders.user_id = registration.user_id','left')
-                        ->join('user_address','orders.address_id =user_address.address_id','left')
-                        ->where('orders.order_id',$id)->get();
-	}
-	public function view_oder_details($id){
-	    return $this->db->select('orders.*,oder_details.*,products.*')
-                        ->from('orders')
-                        ->join('oder_details','orders.order_id = oder_details.order_id','left')
-                        ->join('products','oder_details.pro_id =products.prod_id','left')
-                        ->where('orders.order_id',$id)->get();
-	}
-	public function view_oder_detailsimg($id){
-	    return $this->db->select('orders.*,oder_details.*,products.*,pro_images.*')
-                        ->from('orders')
-                        ->join('oder_details','orders.order_id = oder_details.order_id','left')
-                        ->join('products','oder_details.pro_id =products.prod_id','left')
-                        ->join('pro_images','products.prod_id = pro_images.pro_id','left')
-                        ->where('orders.order_id',$id)->group_by('pro_images.pro_id')->get();
-	}
-	public function accept_order($id){
-	    return $this->db->where('order_id',$id)->update('orders',array('order_status'=>1));
-	}
-	public function update_status($id,$data){
-	    return $this->db->where('order_id',$id)->update('orders',$data);
-	}
-	
-	/*---------------order_list list-----------------*/
-	/*---------------blog list-----------------*/
-	public function blog(){
-	    return $this->db->from('blog')->get();   
-	}
-	/*---------------blog list-----------------*/
-	/*---------------tax -----------------*/
-	public function tax(){
-	    return $this->db->from('tax')->get();   
-	}
-	public function tax_update($id,$data){
-	    return $this->db->where('tax_id',$id)->update('tax',$data);
-	}
-	/*---------------tax -----------------*/
-	/*---------------transporting-----------------*/
-	public function transporting(){
-	    return $this->db->from('transports')->get();
-	}
-	public function add_transports($data){
-	    return $this->db->insert('transports',$data);   
-	}
-	public function active_transport($id){
-	    return $this->db->where('trans_id',$id)->update('transports',array('trans_status'=>1));   
-	}
-	public function inactive_transport($id){
-	    return $this->db->where('trans_id',$id)->update('transports',array('trans_status'=>2));   
-	}
-	public function delete_transport($id){
-	    return $this->db->where('trans_id',$id)->delete('transports');   
-	}
-	public function update_transport($id,$data){
-	    return $this->db->where('trans_id',$id)->update('transports',$data);   
-	}
-	/*---------------transporting-----------------*/
-	/*---------------delivery_charges-----------------*/
-    public function	delivery_charges(){
-	    return $this->db->from('delivery_charges')->get();
-	}
-	public function	add_delivery($data){
-	    return $this->db->insert('delivery_charges',$data);
-	}
-	public function	update_delivery($id,$data){
-	    return $this->db->where('delivery_id',$id)->update('delivery_charges',$data);
-	}
-	/*---------------delivery_charges-----------------*/
-	/*---------------Users list-----------------*/
-	public function Users(){
-	    return $this->db->from('registration')->get();
-	}
-	public function active_user($id){
-	    return $this->db->where('user_id',$id)->update('registration',array('user_status'=>1));
-	}
-	public function inactive_user($id){
-	    return $this->db->where('user_id',$id)->update('registration',array('user_status'=>2));
-	}
-	/*---------------Users list-----------------*/
-	/*---------------Report list-----------------*/
-	public function orders(){
-	    return $this->db->from('orders')->order_by('order_id','DESC')->get();
-	}
-	public function orders_count(){
-	    return $this->db->query("SELECT count(`order_id`) as count FROM `orders` where payment_status = 1")->result();
-	}
-	public function orders_totalamount(){
-	    return $this->db->query("SELECT sum(`pay_amount`) as total FROM `orders`")->result();
-	}
-	public function orders_daytrastion(){
-	    date_default_timezone_set('Asia/Kolkata');
-	    $date =  date("Y-m-d");
-	    return $this->db->query("SELECT sum(`pay_amount`) as day_total FROM `orders` WHERE `date_time` LIKE '%$date%'")->result();
-	}
-	public function orders_daycount(){
-	    date_default_timezone_set('Asia/Kolkata');
-	    $date =  date("Y-m-d");
-	    return $this->db->query("SELECT count(`order_id`) as day_count FROM `orders` WHERE `date_time` LIKE '%$date%'")->result();
-	}
-	public function orders_dateways($day1,$day2){
-	    //return $this->db->query("SELECT count(`order_id`) as day_count FROM `orders` WHERE `date_time` LIKE '%$date%' ORDER BY `shipping` ASC")->result();
-	    $var = $day1;
-		$date = str_replace('/', '-', $var);
-		$start =  date("Y-m-d", strtotime($var));
-		$var2 = $day2;
-		$date = str_replace('/', '-', $var2);
-		$end =  date("Y-m-d", strtotime($var2));
-		if($start == $end){
-		    $ends = date('Y-m-d', strtotime($end . ' +1 day'));
-		}else{
-		    $ends = $end;
-		}
-	    $res = $this->db->query("select * from orders  where date_time between '$start' and '$ends'");
-		return $res;
-	}
-	
-	
-	/*---------------Report list-----------------*/
 	/*---------------home_banners-----------------*/
 	public function home_banners(){
 	    return $this->db->from('home_banners')->get();   
@@ -431,237 +166,6 @@ class Admin_model extends CI_Model {
 	    return $this->db->insert('home_banners',$data);
 	}
 	/*---------------home_banners-----------------*/
-	/*---------------Off line Sales -----------------*/
-	public function add_dealofweek($id,$data){
-	    return $this->db->where('prod_id',$id)->update('products',$data);
-	}
-	public function catgory_names(){
-	   /* return $this->db->select('catgory_list.*,products.prod_categoryid')
-	                    ->from('catgory_list')
-	                    ->join('products','catgory_list.catgory_id =products.prod_categoryid','left')
-	                    ->where('products.prod_status',1)->get();*/
-	   return $this->db->select('prod_code,prod_id')->from('products')->where('products.prod_status',1)->get();
-	}
-	public function feach_proddetails($id){
-	    return $this->db->from('products')->where('prod_id',$id)->get()->result();
-	}
-	public function add_items($data){
-	    return $this->db->insert('add_items',$data);
-	}
-	public function delete_item($id){
-	    return $this->db->where('item_id',$id)->delete('add_items');
-	}
-	public function subtract_prod($prod_id,$qty){
-	    $res = $this->db->from('products')->where('prod_id',$prod_id)->get()->result();
-	    if($res >0){
-	        $reming  = $res[0]->prod_qty - $qty;
-	        if($reming > 0){
-	            $qt = $reming;
-	        }else{
-	            $qt = 0;
-	        }
-	        return $this->db->where('prod_id',$prod_id)->update('products',array('prod_qty'=>$qt));
-	    }else{
-	        return 0;
-	    }
-	}
-	public function itemslist($userid){
-	    return  $this->db->select('products.*,add_items.*')
-                ->from('add_items')
-                ->join('products','add_items.prod_id =products.prod_id','left')
-                ->where('add_items.user_id',$userid)->where('add_items.prods_status',2)->get();
-	}
-	public function items($id){
-	    return $this->db->select('products.*,add_items.*,pro_images.*')
-	                    ->from('add_items')
-	                    ->join('products','add_items.prod_id =products.prod_id','left')
-	                    ->join('pro_images','products.prod_id =pro_images.pro_id','left')
-	                    ->where('add_items.user_id',$id)->where('add_items.prods_status',2)->group_by('pro_images.pro_id')->get();
-	}
-	public function check_update($prod_id,$userid){
-	    $res = $this->db->from('add_items')->where('prod_id',$prod_id)->where('user_id',$userid)->where('prods_status',2)->get()->result();
-	    if($res > 0){
-	        return $res;
-	    }else{
-	        return 0;
-	    }
-	}
-	public function update_items($item_id,$qty){
-	    $res =  $this->db->select('*')->from('add_items')->where('item_id',$item_id)->get()->result();
-	    $qty1 = $res[0]->qty + $qty; $total = $res[0]->price * $qty1;
-	    return $this->db->where('item_id',$item_id)->update('add_items',array('qty'=>$qty1,'total'=>$total));
-	}
-	public function cancel_bill($userid){
-	    return $this->db->where('user_id',$userid)->where('prods_status',2)->delete('add_items');
-	}
-	public function items_count($id){
-	    return $this->db->query("SELECT sum(`total`) as total FROM `add_items` where user_id = $id and prods_status=2")->result();
-	}
-	public function add_item_qty($item_id,$total,$price){
-	    if($total !=0){
-	        return $this->db->where('item_id',$item_id)->update('add_items',array('qty'=>$total,'total'=>$price));
-	    }else{
-	        return $this->db->where('item_id',$item_id)->delete('add_items');
-	    }
-	}
-	public function registration(){
-	   return $this->db->from('registration')->where('user_status',1)->where('user_verfication',1)->get();
-	}
-	public function registration1(){
-	   return $this->db->from('registration')->get();
-	}
-	/*---------------/Off line Sales -----------------*/
-    public function	useradded($data){
-	    $res = $this->db->insert('registration',$data);
-	    return $this->db->insert_id();
-	}
-	public function	addaddress($data){
-	    return $this->db->insert('user_address',$data);
-	}
-	public function prod_Codecheck($code){
-	    $res = $this->db->from('products')->where('prod_code',$code)->get();
-	    if($res->num_rows() > 0){
-	        return 1;
-	    }else{
-	        return 0;
-	    }
-	}
-	public function check_mobile($code){
-	    $res = $this->db->from('registration')->where('mobile',$code)->get();
-	    if($res->num_rows() > 0){
-	        return 1;
-	    }else{
-	        return 0;
-	    }
-	}
-	public function check($mobile){
-	    $res = $this->db->select('user_id')->from('registration')->where('mobile',$mobile)->get();
-	    if($res->num_rows() > 0){
-	        return 1;
-	    }else{
-	        return 0;
-	    }
-	}
-	public function prod_editCodecheck($code,$prod_id){
-	    $res = $this->db->from('products')->where('prod_id',$prod_id)->where('prod_code',$code)->get();
-	    if($res->num_rows() > 0){
-	        return 1;
-	    }else{
-	        return 0;
-	    }
-	}
-	public function check_cart($prod_id,$userid){
-	    $res = $this->db->select('products.prod_id,add_items.*')
-	                    ->from('add_items')
-	                    ->join('products','add_items.prod_id = products.prod_id','left')
-	                    ->where('add_items.prod_id',$prod_id)->where('add_items.user_id',$userid)->where('add_items.prods_status',2)->get();
-	    // print_r($res->num_rows());exit();
-	    if($res->num_rows() > 0){
-	        return $res->result();
-	    }else{
-	        return 0;
-	    }
-	}
-	public function checkout($data){
-	    $res = $this->db->insert('orders',$data);
-	    return $this->db->insert_id();
-	}
-	public function user_address($id){
-	    return $this->db->select('address_id')->from('user_address')->where('user_id',$id)->get()->result();
-	}
-    public function check_pincode($pincode){
-	    $res = $this->db->from('hyderbad_pincodes')->where('pincode',$pincode)->get();
-	    if($res->num_rows() > 0){
-	        return $res->result();
-	    }else{
-	        return 0;
-	    }
-	}
-	public function address_list($id){
-	    return $this->db->select('*')->from('user_address')->where('user_id',$id)->get();
-	}
-    public function pincode($id){
-	    return $this->db->from('user_address')->where('address_id',$id)->get()->result();
-	}
-	
-	public function add_address($user_id,$data){
-	    $res = $this->db->where('user_id',$user_id)->update('user_address',array('address_status'=>2));
-	    return $this->db->insert('user_address',$data);
-	}
-	public function shipping($id){
-	    $distance = $this->db->select('distance')->from('user_address')->where('user_id',$id)->where('address_status',1)->get()->result();
-	    $amount1 = $this->db->query("select sum(total) as amount from add_items where user_id = $id and prods_status = 2");
-	    if($amount1->num_rows() > 0){
-	        $amount2 = $amount1->result();
-    	    foreach($amount2 as $a){
-    	        $amount3 = $a->amount;
-    	        if($amount3){
-    	            $amount = $amount3;
-    	        }else{
-    	            $amount ="0.00";
-    	        }
-    	        $ress = $this->db->select('delivery_id,dis1,dis2,dis3')->from('delivery_charges')->where('first_amount <=',$amount)->where('last_amount >=',$amount)->where('delivery_status',1)->get()->result();
-        	    if(!empty($ress)){
-        	        //print_r($ress);exit();
-        	        if($distance[0]->distance > 0 && $distance[0]->distance <= 10){
-            	        return  $ress[0]->dis1;
-            	    }elseif($distance[0]->distance >=11 && $distance[0]->distance <= 20){
-            	        return  $ress[0]->dis2;
-            	    }elseif($distance[0]->distance >= 21 && $distance[0]->distance <= 30){
-            	        return  $ress[0]->dis3;
-            	    }else{
-            	        return 0;
-            	    }
-        	    }else{
-        	        return 0;
-        	    }
-    	    }
-	    }else{
-	        return 0;
-	    }
-	}
-	public function update_cart($id){
-	    return $this->db->where('user_id',$id)->update('add_items',array('prods_status'=>1));
-	}
-	public function user_addresslist($id){
-	    return $this->db->from('user_address')->where('user_id',$id)->get();
-	}
-	public function active_address($id,$userid){
-	    $res = $this->db->where('user_id',$userid)->update('user_address',array('address_status'=>2));
-	    return $this->db->where('address_id',$id)->where('user_id',$userid)->update('user_address',array('address_status'=>1)); 
-	}
-	public function stock(){
-	    return $this->db->from('products')->get();
-	}
-	public function stock_count(){
-	    return $this->db->query("select count(prod_id) as stockcount from products")->result();
-	}
-	public function stock_qty(){
-	    return $this->db->query("select sum(prod_qty) as stockqty from products")->result();
-	}
-	public function stock_amount(){
-	    return $this->db->query("select sum(prod_qty) as stockamount from products")->result();
-	}
-	/*---------------------added_blog------------------------------*/
-	public function added_blog($data){
-	    return $this->db->insert('blog',$data);
-	}
-	public function active_blog($id){
-	    return $this->db->where('blog_id',$id)->update('blog',array('blog_status'=>1));
-	}
-	public function inactive_blog($id){
-	    return $this->db->where('blog_id',$id)->update('blog',array('blog_status'=>2));
-	}
-	public function delete_blog($id){
-	    return $this->db->where('blog_id',$id)->delete('blog');
-	}
-	public function edit_blog($id){
-	    return $this->db->from('blog')->where('blog_id',$id)->get();
-	}
-	public function update_blog($id,$data){
-	    return $this->db->where('blog_id',$id)->update('blog',$data);   
-	}
-	/*---------------------added_blog------------------------------*/
 	/*---------------------about------------------------------*/
 	public function about(){
 	    return $this->db->from('about')->get();
@@ -718,62 +222,6 @@ class Admin_model extends CI_Model {
 		return $this->db->where('core_id',$id)->update('corevalues',$data);
 	}
 	/*---------------------/about------------------------------*/
-	/*---------------------service------------------------------*/
-	public function service(){
-		return $this->db->from('service')->get();
-	}
-	public function active_servics($id){
-	    return $this->db->where('ser_id',$id)->update('service',array('ser_status'=>1));
-	}
-	public function edit_services($id){
-	    return $this->db->from('service')->where('ser_id',$id)->get()->result();
-	}
-	public function inactive_servics($id){
-	    return $this->db->where('ser_id',$id)->update('service',array('ser_status'=>2));
-	}
-	public function delete_servics($id){
-	    return $this->db->where('ser_id',$id)->delete('service');
-	}
-	public function add_services($data){		
-		return $this->db->insert('service',$data);
-	}
-	public function updateservices($id,$data){
-		return $this->db->where('ser_id',$id)->update('service',$data);
-	}
-	
-	/*---------------------/service------------------------------*/
-	/*---------------------portfolio------------------------------*/
-	public function portfolio_image(){
-		return $this->db->from('portfolio')->order_by('portfolio_id','DESC')->get()->result();
-	}
-	public function active_portifolio($id){
-	    return $this->db->where('portfolio_id',$id)->update('portfolio',array('portfolio_status'=>1));
-	}
-	public function inactive_portifolio($id){
-	    return $this->db->where('portfolio_id',$id)->update('portfolio',array('portfolio_status'=>2));
-	}
-	public function delete_portifolio($id){
-	    return $this->db->where('portfolio_id',$id)->delete('portfolio');
-	}
-	public function addportfolio_image($data){
-		return $this->db->insert('portfolio',$data);
-	}
-	public function portfolio_video(){
-		return $this->db->from('portfolio_videos')->order_by('por_id','DESC')->get()->result();
-	}
-	public function addportfolio_video($data){
-		return $this->db->insert('portfolio_videos',$data);
-	}
-	public function delete_portifolio_video($id){
-		return $this->db->where('por_id',$id)->delete('portfolio_videos');
-	}
-	public function inactive_portifolio_video($id){
-	    return $this->db->where('por_id',$id)->update('portfolio_videos',array('por_v_status'=>2));
-	}
-	public function active_portifolio_video($id){
-	    return $this->db->where('por_id',$id)->update('portfolio_videos',array('por_v_status'=>1));
-	}
-	/*---------------------/portfolio------------------------------*/
 	/*---------------------conatct------------------------------*/
 	public function conatct(){
 		return $this->db->from('contact')->order_by('id','DESC')->get()->result();	
@@ -791,31 +239,6 @@ class Admin_model extends CI_Model {
 		return $this->db->where('id',$id)->update('contact_deatils',$data);
 	}
 	/*---------------------------------------------------------*/
-	/*-----------------------counter----------------------------------*/
-	public function counter(){
-		return $this->db->from('counter')->get()->result();
-	}
-	public function edit_counter($id){
-		return $this->db->from('counter')->where('id',$id)->get()->result();
-	}
-	public function update_counter($id,$data){
-		return $this->db->where('id',$id)->update('counter',$data);
-	}
-	/*-----------------------counter----------------------------------*/
-	/*-----------------------social_media_liks----------------------------------*/
-	public function social_media_liks(){
-		return $this->db->from('social_media_liks')->get()->result();
-	}
-	public function active_social_media($id){
-		return $this->db->where('id',$id)->update('social_media_liks',array('social_status'=>1));
-	}
-	public function inactive_social_media($id){
-		return $this->db->where('id',$id)->update('social_media_liks',array('social_status'=>2));
-	}
-	public function update_social_link($id,$data){
-		return $this->db->where('id',$id)->update('social_media_liks',$data);
-	}
-	/*-----------------------social_media_liks----------------------------------*/
 	/*-----------------------update_conatct_map----------------------------------*/
 	public function conatct_map(){
 		return $this->db->from('contact_map')->get()->result();
@@ -839,6 +262,285 @@ class Admin_model extends CI_Model {
 		return $this->db->where('id',$id)->update('contacts',$data);
 	}
 	/*-----------------------End conatct_address----------------------------------*/
+	/*-----------------------sthalapuranam----------------------------------*/
+	public function sthalapuranam(){
+		return $this->db->from('about_sthala_puranam')->get()->result();
+	}
+	public function edit_sthalapuranam($id){
+		return $this->db->from('about_sthala_puranam')->where('id',$id)->get()->result();
+	}
+	public function add_sthalapuranam($data){
+		return $this->db->insert('about_sthala_puranam',$data);
+	}
+	public function active_sthalapuranam($id){
+		return $this->db->where('id',$id)->update('about_sthala_puranam',array('status'=>1));
+	}
+	public function inactive_sthalapuranam($id){
+		return $this->db->where('id',$id)->update('about_sthala_puranam',array('status'=>2));
+	}
+	public function update_sthalapuranam($id,$data){
+		return $this->db->where('id',$id)->update('about_sthala_puranam',$data);
+	}
+	public function delete_sthalapuranam($id){
+		return $this->db->where('id',$id)->delete('about_sthala_puranam');
+	}
+	/*-----------------------End conatct_address----------------------------------*/
+	/*-----------------------End concept_evolution----------------------------------*/
+	public function concept_evolution(){
+		return $this->db->from('about_concept_evolution')->get()->result();
+	}
+	public function edit_concept_evolution($id){
+		return $this->db->from('about_concept_evolution')->where('id',$id)->get()->result();
+	}
+	public function add_concept_evolution($data){
+		return $this->db->insert('about_concept_evolution',$data);
+	}
+	public function active_concept_evolution($id){
+		return $this->db->where('id',$id)->update('about_concept_evolution',array('status'=>1));
+	}
+	public function inactive_concept_evolution($id){
+		return $this->db->where('id',$id)->update('about_concept_evolution',array('status'=>2));
+	}
+	public function update_concept_evolution($id,$data){
+		return $this->db->where('id',$id)->update('about_concept_evolution',$data);
+	}
+	public function delete_concept_evolution($id){
+		return $this->db->where('id',$id)->delete('about_concept_evolution');
+	}
+	/*-----------------------End concept_evolution----------------------------------*/
+	/*-----------------------bank_accounts----------------------------------*/
 	
+	public function bank_accounts(){
+		return $this->db->from('bank_accounts')->get()->result();
+	}
+	public function edit_bank_accounts($id){
+		return $this->db->from('bank_accounts')->where('id',$id)->get()->result();
+	}
+	public function addbank_accounts($data){
+		return $this->db->insert('bank_accounts',$data);
+	}
+	public function active_bank_accounts($id){
+		return $this->db->where('id',$id)->update('bank_accounts',array('status'=>1));
+	}
+	public function inactive_bank_accounts($id){
+		return $this->db->where('id',$id)->update('bank_accounts',array('status'=>2));
+	}
+	public function update_bank_accounts($id,$data){
+		return $this->db->where('id',$id)->update('bank_accounts',$data);
+	}
+	public function delete_bank_accounts($id){
+		return $this->db->where('id',$id)->delete('bank_accounts');
+	}
+	/*-----------------------End bank_accounts----------------------------------*/
+	/*-----------------------donations_benefits----------------------------------*/
 	
+	public function donations_benefits(){
+		return $this->db->from('donations_benefits')->get()->result();
+	}
+	public function edit_donations_benefits($id){
+		return $this->db->from('donations_benefits')->where('id',$id)->get()->result();
+	}
+	public function update_donations_benefits($id,$data){
+		return $this->db->where('id',$id)->update('donations_benefits',$data);
+	}
+	/*-----------------------End bank_accounts----------------------------------*/
+	/*-----------------------fund_raising_plan----------------------------------*/
+	public function  fund_raising_plan(){
+		return $this->db->from('fund_raising_plan')->get()->result();
+	}
+	public function  edit_fund_raising_plan($id){
+		return $this->db->from('fund_raising_plan')->where('id',$id)->get()->result();
+	}
+	public function addfund_raising_plan($data){
+		return $this->db->insert('fund_raising_plan',$data);
+	}
+	public function updatefund_raising_plan($id,$data){
+		return $this->db->where('id',$id)->update('fund_raising_plan',$data);
+	}
+	public function active_fund_raising_plan($id){
+		return $this->db->where('id',$id)->update('fund_raising_plan',array('status'=>1));
+	}
+	public function inactive_fund_raising_plan($id){
+		return $this->db->where('id',$id)->update('fund_raising_plan',array('status'=>2));
+	}
+	public function delete_fund_raising_plan($id){
+		return $this->db->where('id',$id)->delete('fund_raising_plan');
+	}
+	/*-----------------------End fund_raising_plan----------------------------------*/
+	/*-----------------------user_details----------------------------------*/
+	public function user_details(){
+	    return $this->db->from('user_deatils')->order_by('user_id','DESC')->get()->result();
+	}
+	/*-----------------------End fund_raising_plan----------------------------------*/
+	/*-----------------------donations_list----------------------------------*/
+	public function donations_list(){
+	    return $this->db->select('donation.fullName,donation.Surname,donation.Mobile_Number,donation.Email,donation.Address,donation.total_amount,donation.payment_id,donation.don_id,donation.payment_details,donation.payment_status,donation.add_date as date,user_deatils.*')
+	                    ->from('donation')
+	                    ->join('user_deatils','donation.user_id = user_deatils.user_id','left')
+	                    ->order_by('don_id','DESC')->get()->result();
+	}
+	/*-----------------------End fund_raising_plan----------------------------------*/
+	public function donation_details($id){
+	    return $this->db->from('donation')->where('don_id',$id)->get()->result();
+	}
+	public function donation_details_list($id){
+	    return $this->db->select('donation_items.*,fund_raising_plan.*')
+	                    ->from('donation_items')
+	                    ->join('fund_raising_plan','donation_items.item_id = fund_raising_plan.id')
+	                    ->where('donation_items.donation_id',$id)->get()->result();
+	}
+	public function donation_details_list2($id){
+	    return $this->db->from('donation')->where('don_id',$id)->get()->result();
+	}
+	/*-------------reports-------------*/
+	public function account_statement(){
+	    return $this->db->from('donation')->where('payment_status',1)->where('doner_type',1)->order_by('don_id','DESC')->get()->result();
+	}
+	public function donation_report($data){
+	    if(!empty($data)){
+	        return $this->db->query("select SUM(general_donation) general, SUM(temple_stone) stone, SUM(temple_flooor) floor, SUM(sloka) sloka from donation WHERE doner_type =1 and payment_status = 1 and add_date BETWEEN '$data[from]' AND '$data[to]'")->result();
+	   } else {
+	    return $this->db->select('SUM(general_donation) general, SUM(temple_stone) stone, SUM(temple_flooor) floor, SUM(sloka) sloka')->from('donation')->where('payment_status',1)->where('doner_type',1)->order_by('don_id','DESC')->get()->result();
+	    }
+	}
+	public function firm_donation($data){
+	    if(!empty($data)){
+	        return $this->db->query("select SUM(general_donation) general, SUM(temple_stone) stone, SUM(temple_flooor) floor, SUM(sloka) sloka from donation WHERE doner_type =2 and payment_status = 1 and add_date BETWEEN '$data[from]' AND '$data[to]'")->result();
+	   } else {
+	    return $this->db->select('SUM(general_donation) general, SUM(temple_stone) stone, SUM(temple_flooor) floor, SUM(sloka) sloka')->from('donation')->where('payment_status',1)->where('doner_type',2)->get()->result();
+	   }
+	}
+	public function amount_report($data){
+	    if(!empty($data)){
+	        return $this->db->query("select SUM(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a, COUNT(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a1, SUM(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b, COUNT(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b1, SUM(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c, COUNT(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c1, SUM(CASE WHEN total_amount > 100000 THEN total_amount END) as d, COUNT(CASE WHEN total_amount > 100000 THEN total_amount END) as d1 from donation WHERE doner_type =1 and payment_status = 1 and add_date BETWEEN '$data[from]' AND '$data[to]'")->result();
+	   } else {
+	    return $this->db->query('select SUM(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a, COUNT(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a1, SUM(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b, COUNT(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b1, SUM(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c, COUNT(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c1, SUM(CASE WHEN total_amount > 100000 THEN total_amount END) as d, COUNT(CASE WHEN total_amount > 100000 THEN total_amount END) as d1 from donation WHERE doner_type =1 and payment_status = 1')->result();
+	   }
+	       
+	   }
+	public function firm_amount_report($data){
+	    if(!empty($data)){
+	        return $this->db->query("select SUM(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a, COUNT(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a1, SUM(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b, COUNT(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b1, SUM(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c, COUNT(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c1, SUM(CASE WHEN total_amount > 100000 THEN total_amount END) as d, COUNT(CASE WHEN total_amount > 100000 THEN total_amount END) as d1 from donation WHERE doner_type =2 and payment_status = 1 and add_date BETWEEN '$data[from]' AND '$data[to]'")->result();
+	   } else {
+	    return $this->db->query('select SUM(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a, COUNT(CASE WHEN total_amount BETWEEN 0 AND 10000 THEN total_amount END) as a1, SUM(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b, COUNT(CASE WHEN total_amount BETWEEN 10001 AND 50000 THEN total_amount END) as b1, SUM(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c, COUNT(CASE WHEN total_amount BETWEEN 50000 AND 100000 THEN total_amount END) as c1, SUM(CASE WHEN total_amount > 100000 THEN total_amount END) as d, COUNT(CASE WHEN total_amount > 100000 THEN total_amount END) as d1 from donation WHERE doner_type =2 and payment_status = 1')->result();
+	}
+	}
+	public function source_report($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT reference_marking,SUM(total_amount) t, count(*) c FROM `donation` WHERE doner_type = 1 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP BY reference_marking")->result();
+	    } else {
+	    return $this->db->query('SELECT reference_marking,SUM(total_amount) t, count(*) c FROM `donation` WHERE doner_type = 1 and payment_status = 1 GROUP BY reference_marking')->result();
+
+	    }
+	}
+	public function firm_source_report($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT reference_marking,SUM(total_amount) t, count(*) c FROM `donation` WHERE doner_type = 2 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP BY reference_marking")->result();
+	    } else {
+	    return $this->db->query('SELECT reference_marking,SUM(total_amount) t, count(*) c FROM `donation` WHERE doner_type = 2 and payment_status = 1 GROUP BY reference_marking')->result();
+
+	    }
+	}
+	public function donation_for($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT Son_Daughter,SUM(total_amount) t FROM `donation` WHERE doner_type = 1 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP BY Son_Daughter")->result();
+	    } else {
+	    return $this->db->query('SELECT Son_Daughter ,SUM(total_amount) t FROM `donation` WHERE doner_type = 1 and payment_status = 1 GROUP BY Son_Daughter')->result();
+
+	    }
+	}
+	public function purpose_report($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT Purpose,SUM(total_amount) t FROM `donation` WHERE doner_type = 1 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP BY Purpose")->result();
+	    } else {
+	    return $this->db->query('SELECT Purpose,SUM(total_amount) t FROM `donation` WHERE doner_type = 1 and payment_status = 1 GROUP BY Purpose')->result();
+
+	    }
+	}
+	public function firm_purpose_report($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT Purpose,SUM(total_amount) t FROM `donation` WHERE doner_type = 2 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP BY Purpose")->result();
+	    } else {
+	    return $this->db->query('SELECT Purpose,SUM(total_amount) t FROM `donation` WHERE doner_type = 2 and payment_status = 1 GROUP BY Purpose')->result();
+
+	    }
+	}
+	public function donations_week($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT dayname(add_date) day,SUM(total_amount) t,COUNT(total_amount) c FROM `donation` WHERE doner_type = 1 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP BY dayname(add_date) ORDER BY CASE WHEN Day = 'Sunday' THEN 1 WHEN Day = 'Monday' THEN 2 WHEN Day = 'Tuesday' THEN 3 WHEN Day = 'Wednesday' THEN 4 WHEN Day = 'Thursday' THEN 5 WHEN Day = 'Friday' THEN 6 WHEN Day = 'Saturday' THEN 7 END ASC")->result();
+	    } else {
+	    return $this->db->query("SELECT dayname(add_date) day,SUM(total_amount) t,COUNT(total_amount) c FROM `donation` WHERE doner_type = 1 and payment_status = 1 GROUP BY dayname(add_date) ORDER BY CASE WHEN Day = 'Sunday' THEN 1 WHEN Day = 'Monday' THEN 2 WHEN Day = 'Tuesday' THEN 3 WHEN Day = 'Wednesday' THEN 4 WHEN Day = 'Thursday' THEN 5 WHEN Day = 'Friday' THEN 6 WHEN Day = 'Saturday' THEN 7 END ASC")->result();
+
+	    }
+	}
+	public function firm_donations_week($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT dayname(add_date) day,SUM(total_amount) t,COUNT(total_amount) c FROM `donation` WHERE doner_type = 2 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP BY dayname(add_date) ORDER BY CASE WHEN Day = 'Sunday' THEN 1 WHEN Day = 'Monday' THEN 2 WHEN Day = 'Tuesday' THEN 3 WHEN Day = 'Wednesday' THEN 4 WHEN Day = 'Thursday' THEN 5 WHEN Day = 'Friday' THEN 6 WHEN Day = 'Saturday' THEN 7 END ASC")->result();
+	    } else {
+	    return $this->db->query("SELECT dayname(add_date) day,SUM(total_amount) t,COUNT(total_amount) c FROM `donation` WHERE doner_type = 2 and payment_status = 1 GROUP BY dayname(add_date) ORDER BY CASE WHEN Day = 'Sunday' THEN 1 WHEN Day = 'Monday' THEN 2 WHEN Day = 'Tuesday' THEN 3 WHEN Day = 'Wednesday' THEN 4 WHEN Day = 'Thursday' THEN 5 WHEN Day = 'Friday' THEN 6 WHEN Day = 'Saturday' THEN 7 END ASC")->result();
+
+	    }
+	}
+	public function fest_donations($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT SUM(total_amount) t,date(d.add_date) d1,f.fest_date ,f.fest_name fest,count(*) c FROM donation d INNER join fest f ON date(d.add_date) = f.fest_date WHERE doner_type = 1 and payment_status = 1 and d.add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP by f.fest_date")->result();
+	    } else {
+	    return $this->db->query("SELECT SUM(total_amount) t,date(d.add_date) d1,f.fest_date ,f.fest_name fest,count(*) c FROM donation d INNER join fest f ON date(d.add_date) = f.fest_date WHERE doner_type = 1 and payment_status = 1 GROUP by f.fest_date")->result();
+
+	    }
+	}
+	public function firm_fest_donations($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT SUM(total_amount) t,date(d.add_date) d1,f.fest_date ,f.fest_name fest,count(*) c FROM donation d INNER join fest f ON date(d.add_date) = f.fest_date WHERE doner_type = 2 and payment_status = 1 and d.add_date BETWEEN '$data1[from]' AND '$data1[to]' GROUP by f.fest_date")->result();
+	    } else {
+	    return $this->db->query("SELECT SUM(total_amount) t,date(d.add_date) d1,f.fest_date ,f.fest_name fest,count(*) c FROM donation d INNER join fest f ON date(d.add_date) = f.fest_date WHERE doner_type = 2 and payment_status = 1 GROUP by f.fest_date")->result();
+
+	    }
+	}
+	public function organiasations($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT * FROM donation WHERE doner_type = 2 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]'")->result();
+	    } else {
+	    return $this->db->query("SELECT * FROM donation WHERE doner_type = 2 and payment_status = 1")->result();
+
+	    }
+	}
+	public function location_report($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT city,state,SUM(total_amount) t FROM `donation` WHERE doner_type = 1 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]'  GROUP by city")->result();
+	    } else {
+	    return $this->db->query("SELECT city,state,SUM(total_amount) t FROM `donation` WHERE doner_type = 1 and payment_status = 1 GROUP by city")->result();
+
+	    }
+	}
+	public function firm_location_report($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT city,state,SUM(total_amount) t FROM `donation` WHERE doner_type = 2 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]'  GROUP by city")->result();
+	    } else {
+	    return $this->db->query("SELECT city,state,SUM(total_amount) t FROM `donation` WHERE doner_type = 2 and payment_status = 1 GROUP by city")->result();
+	    }
+	}
+	public function age_report($data1){
+	    if(!empty($data1)){
+	        return $this->db->query("SELECT SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) < 20 THEN total_amount END) as u20, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) BETWEEN 20 AND 35 THEN total_amount END) as a2035, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) BETWEEN 36 AND 45 THEN total_amount END) as a3545, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) BETWEEN 46 AND 55 THEN total_amount END) as a4555, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) > 55 THEN total_amount END) as a55 FROM `donation` WHERE doner_type = 1 and payment_status = 1 and add_date BETWEEN '$data1[from]' AND '$data1[to]'")->result();
+	    } else {
+	    return $this->db->query("SELECT SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) < 20 THEN total_amount END) as u20, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) BETWEEN 20 AND 35 THEN total_amount END) as a2035, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) BETWEEN 36 AND 45 THEN total_amount END) as a3545, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) BETWEEN 46 AND 55 THEN total_amount END) as a4555, SUM(CASE WHEN FLOOR(DATEDIFF('2020-10-1',Date_of_Birth)/365) > 55 THEN total_amount END) as a55 FROM `donation` WHERE doner_type = 1 and payment_status = 1")->result();
+	    }
+	}
+	public function sloka_report(){
+	    return $this->db->from('donation')->where('payment_status',1)->where('doner_type',1)->get()->result();
+	}
+	public function  firm_sloka_report(){
+	    return $this->db->from('donation')->where('payment_status',1)->where('doner_type',2)->get()->result();
+	}
+	/*---------------reports--------------*/
+	public function addfest($data){
+	    return $this->db->insert('fest',$data);
+	}
+	public function fest(){
+	    return $this->db->from('fest')->get()->result();
+	}
+	public function delete_fest($id){
+	    return $this->db->where('fest_id',$id)->delete('fest');
+	}
 }?>
